@@ -18,12 +18,18 @@ package timemanger;
 
 import java.io.File;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -59,7 +65,16 @@ public class TimeManager extends Application {
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
         root.setTop(menuBar);
         
+        // File menu - new, save, exit
+        Menu aboutMenu = new Menu("About");
+        MenuItem aboutMenuItem = new MenuItem("About");
+        MenuItem exitMenuItem = new MenuItem("Exit");
         
+        aboutMenu.getItems().addAll(aboutMenuItem, new SeparatorMenuItem(), exitMenuItem);
+        menuBar.getMenus().addAll(aboutMenu);
+        
+        aboutMenuItem.setOnAction(actionEvent -> aboutPopup());
+        exitMenuItem.setOnAction(actionEvent -> Platform.exit());
         
         //--- Create UI nodes
         Font uiFont = Font.font("Tahoma", FontWeight.MEDIUM, 14);
@@ -148,6 +163,20 @@ public class TimeManager extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private void aboutPopup() {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Information Dialog");
+        alert.setHeaderText(null);
+        
+        String s = "\t\tTime Manager v0.1 \n";
+        s += "Copyright (C) 2018 Mauricio Santos-Hoyos\n";
+        s += "\t\tLicensed under GPLv3\n\n";
+        s += "Alarm sound license:\ncreativecommons.org/licenses/by/3.0/legalcode";
+        alert.setContentText(s);
+
+        alert.showAndWait();
     }
     
 }
