@@ -14,13 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package timemanger;
+package timemanager;
 
 import java.io.File;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -51,14 +50,14 @@ public class TimeManager extends Application {
     String sep = File.separator;
     Text feedback;
     MediaPlayer mediaPlayer;
-    FileManager fm = new FileManager(System.getProperty("user.home"),
-                                    feedback);
+    FileManager fm = new FileManager(System.getProperty("user.home"), feedback);
     Label saveFileLbl;
     
     
     @Override
     public void start(Stage primaryStage) {
         BorderPane root = new BorderPane();
+        root.getStyleClass().add("borderpane");
         
         //--- Menu bar
         MenuBar menuBar = new MenuBar();
@@ -70,20 +69,21 @@ public class TimeManager extends Application {
         MenuItem aboutMenuItem = new MenuItem("About");
         MenuItem exitMenuItem = new MenuItem("Exit");
         
-        aboutMenu.getItems().addAll(aboutMenuItem, new SeparatorMenuItem(), exitMenuItem);
+        aboutMenu.getItems().addAll(aboutMenuItem, 
+                                    new SeparatorMenuItem(), 
+                                    exitMenuItem);
         menuBar.getMenus().addAll(aboutMenu);
         
         aboutMenuItem.setOnAction(actionEvent -> aboutPopup());
         exitMenuItem.setOnAction(actionEvent -> Platform.exit());
         
         //--- Create UI nodes
-        Font uiFont = Font.font("Tahoma", FontWeight.MEDIUM, 14);
-        Font btnFont = Font.font("Tahoma", FontWeight.MEDIUM, 13);
-        Font feedbackFont = Font.font("Tahoma", FontWeight.MEDIUM, 12);
+        Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
         
         feedback = new Text();
         Label saveFileTitleLbl = new Label("Save Timer Entry File at: ");
-        saveFileLbl = new Label(System.getProperty("user.dir"));
+        saveFileLbl = new Label(" " + System.getProperty("user.dir") + " ");
+        saveFileLbl.setId("filepath");
         Button saveFileBtn = new Button("Change Directory");
         Button newTimerBtn = new Button("Create Timer");
         
@@ -95,28 +95,22 @@ public class TimeManager extends Application {
         VBox timersVbox = new VBox(5);
         timersVbox.setPadding(new Insets(1));
         
+        rootVbox.getStyleClass().add("vbox");
+        feedBackHbox.getStyleClass().add("hbox");
+        saveFileLayout.getStyleClass().add("hbox");
+        addTimerLayout.getStyleClass().add("hbox");
+        timersVbox.getStyleClass().add("vbox");
+        
         //--- Format UI nodes
-        saveFileBtn.setFont(btnFont);
-        newTimerBtn.setFont(btnFont);
-        
-        saveFileTitleLbl.setFont(uiFont);
-        saveFileLbl.setFont(uiFont);
-        
-        saveFileLayout.setStyle("-fx-padding: 10;");
-        saveFileLayout.setAlignment(Pos.CENTER);
         saveFileLayout.getChildren().addAll(saveFileTitleLbl, 
                                             saveFileLbl, 
                                             saveFileBtn);
-        addTimerLayout.setStyle("-fx-padding: 10;");
-        addTimerLayout.setAlignment(Pos.CENTER);
         addTimerLayout.getChildren().addAll(newTimerBtn);
         
         feedback.setFont(feedbackFont);
-        feedback.setFill(Color.FIREBRICK);
+        feedback.setFill(Color.BEIGE);
         
         feedBackHbox.getChildren().addAll(feedback);
-        feedBackHbox.setAlignment(Pos.CENTER);
-        feedBackHbox.setStyle("-fx-padding: 10;");
         
         //--- Setup the MediaPlayer
         String soundFile = "alarm_01.mp3";
@@ -132,8 +126,12 @@ public class TimeManager extends Application {
                                     feedBackHbox,
                                     mediaView);
 
+        
         root.setCenter(rootVbox);
-        Scene scene = new Scene(root, 800, 400);
+        Scene scene = new Scene(root, 900, 400);
+        
+        scene.getStylesheets().add("timemanager/styleSheet.css");
+        
         primaryStage.setTitle("Time Manager v0.1");
         primaryStage.setScene(scene);
         
@@ -151,8 +149,13 @@ public class TimeManager extends Application {
             File defaultDirectory = new File(System.getProperty("user.home"));
             chooser.setInitialDirectory(defaultDirectory);
             File selectedDirectory = chooser.showDialog(primaryStage);
-            saveFileLbl.setText(selectedDirectory.getAbsolutePath());
-            fm.updateLocation(selectedDirectory.getAbsolutePath());
+            try{
+                saveFileLbl.setText(selectedDirectory.getAbsolutePath());
+                fm.updateLocation(selectedDirectory.getAbsolutePath());
+            }
+            catch(NullPointerException e){
+                feedback.setText("Change directory canceled.");
+            }
         });
         
         primaryStage.show();
@@ -167,7 +170,7 @@ public class TimeManager extends Application {
 
     private void aboutPopup() {
         Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Information Dialog");
+        alert.setTitle("About Time Manager");
         alert.setHeaderText(null);
         
         String s = "\t\tTime Manager v0.1 \n";

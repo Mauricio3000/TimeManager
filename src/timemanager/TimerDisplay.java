@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package timemanger;
+package timemanager;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -131,11 +131,7 @@ public class TimerDisplay {
         hoursCB.setValue("00");
         minCB.setValue("00");
         secCB.setValue("00");
-        
-        hoursCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-        minCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-        secCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-        
+ 
         hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         
         //--- Compose UI nodes
@@ -183,12 +179,7 @@ public class TimerDisplay {
                 resetBtn.setDisable(true);
                 removeBtn.setDisable(true);
                 noteField.setDisable(true);
-                
-                // Keep comboboxs non opaque
-                hoursCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-                minCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-                secCB.setStyle("-fx-opacity: 1; -fx-text-fill: black;-fx-background-color: white");
-                
+
                 // Start timer using initial_hours / minutes
                 timer = new TM_Timer(
                                     mediaPlayer,
