@@ -1,11 +1,14 @@
 # TimeManager
 Manage multiple countdown alarms with custom memos and automatic logging.
 
-# Build
-Load into Java IDE (Netbeans) and build
+# Build with Netbeans
+- Create new JavaFX project
+- Delete any automatically created .java files
+- Place these java files in /src directory
+- Build
 
 # Use
-Double click .jar file. 
+Double click project/dist/TimerFX.jar file. 
 Ensure alarm sound is in the same folder.
 
 ###### Alarm sound
