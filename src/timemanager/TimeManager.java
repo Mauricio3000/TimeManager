@@ -50,7 +50,7 @@ public class TimeManager extends Application {
     String sep = File.separator;
     Text feedback;
     MediaPlayer mediaPlayer;
-    FileManager fm = new FileManager(System.getProperty("user.home"), feedback);
+    FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;
     
     
@@ -82,7 +82,8 @@ public class TimeManager extends Application {
         
         feedback = new Text();
         Label saveFileTitleLbl = new Label("Save Timer Entry File at: ");
-        saveFileLbl = new Label(" " + System.getProperty("user.dir") + " ");
+        saveFileLbl = new Label(System.getProperty("user.dir"));
+        saveFileLbl.setPadding(new Insets(4));
         saveFileLbl.setId("filepath");
         Button saveFileBtn = new Button("Change Directory");
         Button newTimerBtn = new Button("Create Timer");

@@ -43,12 +43,12 @@ public class FileManager {
         dataFile = dir + sep + "TimeManager.data.csv";
     }
     
-    public void saveToFile(String lines)
+    public boolean saveToFile(String lines)
     {
         try {
             if(checkForFile())
             {
-            Files.write(Paths.get(dataFile), 
+                Files.write(Paths.get(dataFile), 
                         lines.getBytes(), 
                         StandardOpenOption.APPEND);
             }
@@ -56,7 +56,9 @@ public class FileManager {
             feedback.setText(e.getMessage());
             System.out.println(e.getMessage());
             System.out.println(e.getStackTrace());
+            return false;
         }
+        return true;
     }
     
     public boolean checkForFile()
@@ -71,8 +73,9 @@ public class FileManager {
             catch(IOException e){ 
                 feedback.setText(e.getMessage());
                 System.out.println(e.getMessage());
-                System.out.println(e.getStackTrace()); }
+                System.out.println(e.getStackTrace()); 
+                return false;
+            }
         }
-        return false;
     }
 }

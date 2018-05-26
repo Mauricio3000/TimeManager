@@ -85,7 +85,7 @@ public class TimerDisplay {
         }
         
         //--- Create UI nodes
-        container = new VBox(5);       // Root container
+        container = new VBox(5);  // Root container
         HBox hbox = new HBox(5);  // TimerDisplay comboboxes container 
         HBox hbBtn = new HBox(5); // Buttons container
         
@@ -142,7 +142,7 @@ public class TimerDisplay {
         
         //--- Event handlers
         startBtn.setOnAction(event -> {
-            this.startClicked();
+            this.startBtnClicked();
         });
         
         resetBtn.setOnAction(event -> {
@@ -156,7 +156,7 @@ public class TimerDisplay {
     
     public VBox getVBox(){ return container; } 
     
-    public void startClicked()
+    public void startBtnClicked()
     { // Start button handler
         String text = startBtn.getText();
         
@@ -252,6 +252,7 @@ public class TimerDisplay {
         
         // Set startBtn text to Start
         startBtn.setText("Start");
+        resetBtn.setDisable(true);
         
         // Enable comboboxes
         noteField.setDisable(false);
@@ -280,7 +281,10 @@ public class TimerDisplay {
                     Integer.parseInt((String)secCB.getValue()) };
             
         TimerEntry te = new TimerEntry(noteField.getText(), start, end);
-        fm.saveToFile(te.formatLine());
-        feedback.setText("Last recorded entry:  " +  te.formatLine());
+        if( fm.saveToFile(te.formatLine()) )
+        {
+            feedback.setText("Last recorded entry:  " +  te.formatLine());
+        }
+        
     }
 }
