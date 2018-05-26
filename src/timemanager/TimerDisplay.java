@@ -256,6 +256,7 @@ public class TimerDisplay {
         
         // Enable comboboxes
         noteField.setDisable(false);
+        removeBtn.setDisable(false);
         hoursCB.setDisable(false);
         minCB.setDisable(false);
         secCB.setDisable(false);
