@@ -81,7 +81,7 @@ public class TimeManager extends Application {
         Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
         
         feedback = new Text();
-        Label saveFileTitleLbl = new Label("Save timer data file at: ");
+        Label saveFileTitleLbl = new Label("Save timer data files at: ");
         saveFileLbl = new Label(System.getProperty("user.dir"));
         saveFileLbl.setPadding(new Insets(4));
         saveFileLbl.setId("filepath");
@@ -129,7 +129,7 @@ public class TimeManager extends Application {
 
         
         root.setCenter(rootVbox);
-        Scene scene = new Scene(root, 900, 400);
+        Scene scene = new Scene(root, 1000, 400);
         
         scene.getStylesheets().add("timemanager/styleSheet.css");
         

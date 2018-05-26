@@ -45,6 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-font-size: 10pt;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 2,0,0,1 ); 
     -fx-pref-width: 85px;
+    -fx-pref-height: 35px;
 }
 
 .button:hover {
@@ -82,5 +83,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-radius: 3px, 3px, 2px, 1px;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 2,0,0,1 );
     -fx-font-size : 12pt;
+    -fx-pref-width: 300;
+    -fx-pref-height: 33px;
 }
 

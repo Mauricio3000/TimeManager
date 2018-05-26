@@ -118,10 +118,8 @@ public class TimerDisplay {
         removeBtn.setFont(btnFont);
         cb1.setFont(btnFont);
         
-        hbox.setPadding(new Insets(5));
         hbox.setAlignment(Pos.CENTER);
         hbBtn.setAlignment(Pos.CENTER);
-        container.setPadding(new Insets(1));
         container.setAlignment(Pos.CENTER);
         
         hoursCB.setItems(hoursList);
