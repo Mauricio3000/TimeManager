@@ -95,7 +95,7 @@ public class TimeManager extends Application {
         Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
         
         feedback = new Text();
-        Label saveFileTitleLbl = new Label("Save timer data files at: ");
+        Label saveFileTitleLbl = new Label("Log file directory: ");
         saveFileLbl = new Label(System.getProperty("user.dir"));
         saveFileLbl.setPadding(new Insets(4));
         saveFileLbl.setId("filepath");
