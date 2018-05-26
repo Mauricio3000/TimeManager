@@ -18,13 +18,17 @@ package timemanager;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import javafx.scene.text.Text;
 
 public class FileManager {
+    ArrayList<String> timerData;
     String dataFile;
     String timerFile;
     Text feedback;
@@ -32,9 +36,32 @@ public class FileManager {
     
     FileManager(String dir, Text feedback)
     {
+        timerData = new ArrayList();
         dataFile = dir + sep + "TimeManager.data.csv";
         timerFile = dir + sep + "TimeManager.timers.csv";
         this.feedback = feedback;
+    }
+    
+    private void exceptionHandler(Exception e)
+    {
+        feedback.setText(e.getMessage());
+        System.out.println(e.getMessage());
+        System.out.println(Arrays.toString(e.getStackTrace())); 
+    }
+    
+    public ArrayList<String> getTimers()
+    {
+        timerData.clear();
+        
+        File f = new File(timerFile);
+        if(f.isFile())
+        {
+            try (Stream<String> lines = Files.lines(Paths.get(timerFile), Charset.defaultCharset())) {
+                lines.forEachOrdered(line -> timerData.add(line));
+            }
+            catch(IOException e){ exceptionHandler(e); }
+        }
+        return timerData;
     }
     
     public void writeTimers(ArrayList<TimerDisplay> timers)
@@ -44,12 +71,22 @@ public class FileManager {
         {   
             String temp;
             s += timers.get(i).noteField.getText() + ",";
-            temp = (String)timers.get(i).hoursCB.getValue();
-            s += temp + ",";
-            temp = (String)timers.get(i).minCB.getValue();
-            s += temp + ",";
-            temp = (String)timers.get(i).secCB.getValue();
-            s += temp + "\n";
+            
+            if(timers.get(i).initial_hours != null)
+            {
+                s += timers.get(i).initial_hours + ",";
+                s += timers.get(i).initial_minutes + ",";
+                s += timers.get(i).initial_seconds + "\n";
+            }
+            else
+            {
+                temp = (String)timers.get(i).hoursCB.getValue();
+                s += temp + ",";
+                temp = (String)timers.get(i).minCB.getValue();
+                s += temp + ",";
+                temp = (String)timers.get(i).secCB.getValue();
+                s += temp + "\n";
+            }
         }
         writeFile(s, timerFile);
     }
@@ -73,9 +110,7 @@ public class FileManager {
         }
         catch (IOException e) 
         {
-            feedback.setText(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
+            exceptionHandler(e);
             return false;
         }
         return true;
@@ -98,9 +133,7 @@ public class FileManager {
                     StandardOpenOption.WRITE);
         }
         catch (IOException e) {
-            feedback.setText(e.getMessage());
-            System.out.println(e.getMessage());
-            System.out.println(e.getStackTrace());
+            exceptionHandler(e);
             return false;
         }
         return true;
@@ -118,9 +151,7 @@ public class FileManager {
             }
             catch(IOException e)
             { 
-                feedback.setText(e.getMessage());
-                System.out.println(e.getMessage());
-                System.out.println(e.getStackTrace()); 
+                exceptionHandler(e); 
             }
             return true;
         }

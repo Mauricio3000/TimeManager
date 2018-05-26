@@ -279,19 +279,21 @@ public class TimerDisplay {
     
     private void saveEntry()
     {
-        int[] start = {Integer.parseInt(initial_hours),
-                    Integer.parseInt(initial_minutes),
-                    Integer.parseInt(initial_seconds) };
-            
-        int[] end = {Integer.parseInt((String)hoursCB.getValue()),
-                    Integer.parseInt((String)minCB.getValue()),
-                    Integer.parseInt((String)secCB.getValue()) };
-            
-        TimerEntry te = new TimerEntry(noteField.getText(), start, end);
-        if( fm.appendToFile(te.formatLine(), fm.dataFile) )
+        if(initial_hours != null)
         {
-            feedback.setText("Last recorded entry:  " +  te.formatLine());
+            int[] start = {Integer.parseInt(initial_hours),
+                        Integer.parseInt(initial_minutes),
+                        Integer.parseInt(initial_seconds) };
+
+            int[] end = {Integer.parseInt((String)hoursCB.getValue()),
+                        Integer.parseInt((String)minCB.getValue()),
+                        Integer.parseInt((String)secCB.getValue()) };
+
+            TimerEntry te = new TimerEntry(noteField.getText(), start, end);
+            if( fm.appendToFile(te.formatLine(), fm.dataFile) )
+            {
+                feedback.setText("Last recorded entry:  " +  te.formatLine());
+            }
         }
-        
     }
 }

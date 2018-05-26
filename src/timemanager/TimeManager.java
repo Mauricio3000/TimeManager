@@ -47,14 +47,16 @@ import javafx.stage.Stage;
  *
  * @author mauricio
  */
+
 public class TimeManager extends Application {
+    ArrayList<String> timersFromFile;
     ArrayList<TimerDisplay> timers;
     String sep = File.separator;
     Text feedback;
     MediaPlayer mediaPlayer;
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;
-    double version = 0.01;
+    double version = 0.02;
     String verStr = "" + version;
     
     
@@ -125,13 +127,20 @@ public class TimeManager extends Application {
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         MediaView mediaView = new MediaView(mediaPlayer);
         
+        //--- Load saved timers into timersVbox
+        timersFromFile = fm.getTimers();
+        for(int i=0; i<timersFromFile.size(); i++)
+        {
+            String[] data = timersFromFile.get(i).split(",");
+            createTimer(timersVbox, data[1], data[2], data[3], data[0]);
+        }
+        
         //--- Load UI into rootVbox
         rootVbox.getChildren().addAll(saveFileLayout, 
                                     addTimerLayout, 
                                     timersVbox,
                                     feedBackHbox,
                                     mediaView);
-
         
         root.setCenter(rootVbox);
         Scene scene = new Scene(root, 1000, 400);
@@ -143,11 +152,7 @@ public class TimeManager extends Application {
         
         //--- Button event handlers
         newTimerBtn.setOnAction(event -> {
-                TimerDisplay timerDisplay = 
-                        new TimerDisplay(fm, feedback, mediaPlayer, timers);
-                timerDisplay.parent = timersVbox;
-                timersVbox.getChildren().add(timerDisplay.getVBox());
-                timers.add(timerDisplay);
+            createTimer(timersVbox,"00","00","00"," ");
         });
         
         saveFileBtn.setOnAction(event -> {
@@ -167,10 +172,24 @@ public class TimeManager extends Application {
         
         primaryStage.show();
     }
-
+    
+    @Override
     public void stop()
     {
         fm.writeTimers(timers);
+    }
+    
+    public void createTimer(VBox parent, String h, String m, String s, String n)
+    {
+        TimerDisplay timerDisplay = 
+            new TimerDisplay(fm, feedback, mediaPlayer, timers);
+        timerDisplay.parent = parent;
+        timerDisplay.hoursCB.setValue(h);
+        timerDisplay.minCB.setValue(m);
+        timerDisplay.secCB.setValue(s);
+        timerDisplay.noteField.setText(n);
+        parent.getChildren().add(timerDisplay.getVBox());
+        timers.add(timerDisplay);
     }
     
     public static void main(String[] args) {
