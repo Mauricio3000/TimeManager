@@ -49,7 +49,14 @@ import javafx.stage.Stage;
  */
 
 public class TimeManager extends Application {
-    ArrayList<String> timersFromFile;
+    /*
+        Manage multiple timers with custom memos.
+        Upon reset or removal of a timer, 
+        a record is stored of the memo and the duration.
+        The user can choose in which directory to store the timer log file.
+        The application state file will always be in the application
+        run directory.
+    */
     ArrayList<TimerDisplay> timers;
     String sep = File.separator;
     Text feedback;
@@ -71,7 +78,7 @@ public class TimeManager extends Application {
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
         root.setTop(menuBar);
         
-        // File menu - new, save, exit
+        // File menu - about, exit
         Menu aboutMenu = new Menu("About");
         MenuItem aboutMenuItem = new MenuItem("About");
         MenuItem exitMenuItem = new MenuItem("Exit");
@@ -127,11 +134,20 @@ public class TimeManager extends Application {
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         MediaView mediaView = new MediaView(mediaPlayer);
         
-        //--- Load saved timers into timersVbox
-        timersFromFile = fm.getTimers();
-        for(int i=0; i<timersFromFile.size(); i++)
+        //--- Load saved state saveFileLbl
+        ArrayList<String> appData = fm.getSaveDirState();
+        for(int i=0; i<appData.size(); i++)
         {
-            String[] data = timersFromFile.get(i).split(",");
+            saveFileLbl.setText( appData.get(0) );
+            fm.updateLocation(appData.get(0));
+            break;
+        }
+        
+        //--- Load saved timers into timersVbox
+        appData = fm.getTimerState();
+        for(int i=0; i<appData.size(); i++)
+        {
+            String[] data = appData.get(i).split(",");
             createTimer(timersVbox, data[1], data[2], data[3], data[0]);
         }
         
@@ -176,7 +192,8 @@ public class TimeManager extends Application {
     @Override
     public void stop()
     {
-        fm.writeTimers(timers);
+        fm.writeTimerState(timers);
+        fm.writeSaveDirState(saveFileLbl);
     }
     
     public void createTimer(VBox parent, String h, String m, String s, String n)

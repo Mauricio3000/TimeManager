@@ -290,7 +290,7 @@ public class TimerDisplay {
                         Integer.parseInt((String)secCB.getValue()) };
 
             TimerEntry te = new TimerEntry(noteField.getText(), start, end);
-            if( fm.appendToFile(te.formatLine(), fm.dataFile) )
+            if( fm.appendToFile(te.formatLine(), fm.timerLogFile) )
             {
                 feedback.setText("Last recorded entry:  " +  te.formatLine());
             }

@@ -25,20 +25,25 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Stream;
+import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
 public class FileManager {
-    ArrayList<String> timerData;
-    String dataFile;
-    String timerFile;
+    String saveDirFileName = "TimeManager.savedir.csv"; 
+    String timerStateFileName = "TimeManager.timers.csv"; 
+    String timerLogsFileName = "TimeManager.timer.logs.csv";
+    String timerLogFile; 
+    String timerStateFile;
+    String saveDirFile;
     Text feedback;
     String sep = File.separator;
     
     FileManager(String dir, Text feedback)
     {
-        timerData = new ArrayList();
-        dataFile = dir + sep + "TimeManager.data.csv";
-        timerFile = dir + sep + "TimeManager.timers.csv";
+        
+        timerLogFile = dir + sep + timerLogsFileName;
+        timerStateFile = dir + sep + timerStateFileName;
+        saveDirFile = dir + sep + saveDirFileName;
         this.feedback = feedback;
     }
     
@@ -49,14 +54,16 @@ public class FileManager {
         System.out.println(Arrays.toString(e.getStackTrace())); 
     }
     
-    public ArrayList<String> getTimers()
-    {
-        timerData.clear();
+    public ArrayList<String> getTimerState()
+    {   /*
+        Read state file data and retrun as ArrayList<String> of file lines.
+        */
+        ArrayList<String> timerData = new ArrayList();
         
-        File f = new File(timerFile);
+        File f = new File(timerStateFile);
         if(f.isFile())
         {
-            try (Stream<String> lines = Files.lines(Paths.get(timerFile), Charset.defaultCharset())) {
+            try (Stream<String> lines = Files.lines(Paths.get(timerStateFile), Charset.defaultCharset())) {
                 lines.forEachOrdered(line -> timerData.add(line));
             }
             catch(IOException e){ exceptionHandler(e); }
@@ -64,12 +71,31 @@ public class FileManager {
         return timerData;
     }
     
-    public void writeTimers(ArrayList<TimerDisplay> timers)
+    public ArrayList<String> getSaveDirState()
+    {   /*
+        Read state file data and retrun as ArrayList<String> of file lines.
+        */
+        ArrayList<String> appData = new ArrayList();
+        
+        File f = new File(saveDirFile);
+        if(f.isFile())
+        {
+            try (Stream<String> lines = Files.lines(Paths.get(saveDirFile), Charset.defaultCharset())) {
+                lines.forEachOrdered(line -> appData.add(line));
+            }
+            catch(IOException e){ exceptionHandler(e); }
+        }
+        return appData;
+    }
+    
+    public void writeTimerState(ArrayList<TimerDisplay> timers)
     {
+        /*
+        Write exisiting timers and save file location to file.
+        */
         String s = "";
         for(int i=0; i<timers.size(); i++)
         {   
-            String temp;
             s += timers.get(i).noteField.getText() + ",";
             
             if(timers.get(i).initial_hours != null)
@@ -80,6 +106,7 @@ public class FileManager {
             }
             else
             {
+                String temp;
                 temp = (String)timers.get(i).hoursCB.getValue();
                 s += temp + ",";
                 temp = (String)timers.get(i).minCB.getValue();
@@ -88,13 +115,19 @@ public class FileManager {
                 s += temp + "\n";
             }
         }
-        writeFile(s, timerFile);
+        // Write timer data
+        writeFile(s, timerStateFile);
+    }
+    
+    public void writeSaveDirState(Label saveFileLbl)
+    {
+        // Write dave dir
+        writeFile(saveFileLbl.getText(), saveDirFile);
     }
     
     public void updateLocation(String dir)
     {
-        dataFile = dir + sep + "TimeManager.data.csv";
-        timerFile = dir + sep + "TimeManager.timers.csv";
+        timerLogFile = dir + sep + timerLogsFileName;
     }
     
     public boolean appendToFile(String lines, String file)
