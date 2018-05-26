@@ -16,6 +16,7 @@
  */
 package timemanager;
 
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -38,7 +39,7 @@ import javafx.scene.text.Text;
  * @author mauricio
  */
 public class TimerDisplay {
-    
+    ArrayList<TimerDisplay> timers;
     MediaPlayer mediaPlayer;
     FileManager fm;
     TM_Timer timer;
@@ -63,11 +64,15 @@ public class TimerDisplay {
     VBox container;
     VBox parent;
             
-    TimerDisplay(FileManager fm, Text feedback, MediaPlayer mediaPlayer)
+    TimerDisplay(FileManager fm, 
+                    Text feedback, 
+                    MediaPlayer mediaPlayer,
+                    ArrayList<TimerDisplay> timers)
     {
         this.fm = fm;
         this.feedback = feedback;
         this.mediaPlayer = mediaPlayer;
+        this.timers = timers;
         
         //--- Create Data structures
         ObservableList<String> hoursList = 
@@ -267,6 +272,9 @@ public class TimerDisplay {
         
         // Remove container from parent
         parent.getChildren().remove(container);
+        
+        // Remove from timers ArrayList
+        timers.remove(this);
     }
     
     private void saveEntry()
@@ -280,7 +288,7 @@ public class TimerDisplay {
                     Integer.parseInt((String)secCB.getValue()) };
             
         TimerEntry te = new TimerEntry(noteField.getText(), start, end);
-        if( fm.saveToFile(te.formatLine()) )
+        if( fm.appendToFile(te.formatLine(), fm.dataFile) )
         {
             feedback.setText("Last recorded entry:  " +  te.formatLine());
         }

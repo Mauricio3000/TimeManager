@@ -17,6 +17,7 @@
 package timemanager;
 
 import java.io.File;
+import java.util.ArrayList;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -47,6 +48,7 @@ import javafx.stage.Stage;
  * @author mauricio
  */
 public class TimeManager extends Application {
+    ArrayList<TimerDisplay> timers;
     String sep = File.separator;
     Text feedback;
     MediaPlayer mediaPlayer;
@@ -58,6 +60,7 @@ public class TimeManager extends Application {
     
     @Override
     public void start(Stage primaryStage) {
+        timers = new ArrayList();
         BorderPane root = new BorderPane();
         root.getStyleClass().add("borderpane");
         
@@ -141,9 +144,10 @@ public class TimeManager extends Application {
         //--- Button event handlers
         newTimerBtn.setOnAction(event -> {
                 TimerDisplay timerDisplay = 
-                        new TimerDisplay(fm, feedback, mediaPlayer);
+                        new TimerDisplay(fm, feedback, mediaPlayer, timers);
                 timerDisplay.parent = timersVbox;
                 timersVbox.getChildren().add(timerDisplay.getVBox());
+                timers.add(timerDisplay);
         });
         
         saveFileBtn.setOnAction(event -> {
@@ -164,9 +168,11 @@ public class TimeManager extends Application {
         primaryStage.show();
     }
 
-    /**
-     * @param args the command line arguments
-     */
+    public void stop()
+    {
+        fm.writeTimers(timers);
+    }
+    
     public static void main(String[] args) {
         launch(args);
     }
