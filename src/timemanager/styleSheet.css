@@ -58,6 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-background-radius: 3px, 3px, 2px, 1px;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 5,0,0,1 );
     -fx-font-size : 13pt;
+    -fx-pref-width: 90;
 }
 
 .combo-box-base:disabled {
