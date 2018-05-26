@@ -44,6 +44,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 .button {
     -fx-font-size: 10pt;
     -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.7) , 2,0,0,1 ); 
+    -fx-pref-width: 85px;
 }
 
 .button:hover {

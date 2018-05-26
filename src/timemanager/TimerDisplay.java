@@ -136,7 +136,7 @@ public class TimerDisplay {
         
         //--- Compose UI nodes
         hbBtn.getChildren().addAll(startBtn, resetBtn, removeBtn);
-        hbox.getChildren().addAll(noteLbl,noteField,hoursCB,
+        hbox.getChildren().addAll(noteField,hoursCB,
                                     sep1,minCB,sep2,secCB,hbBtn, cb1);
         container.getChildren().addAll(hbox);
         

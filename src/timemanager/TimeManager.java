@@ -81,12 +81,12 @@ public class TimeManager extends Application {
         Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
         
         feedback = new Text();
-        Label saveFileTitleLbl = new Label("Save Timer Entry File at: ");
+        Label saveFileTitleLbl = new Label("Save timer data file at: ");
         saveFileLbl = new Label(System.getProperty("user.dir"));
         saveFileLbl.setPadding(new Insets(4));
         saveFileLbl.setId("filepath");
-        Button saveFileBtn = new Button("Change Directory");
-        Button newTimerBtn = new Button("Create Timer");
+        Button saveFileBtn = new Button("Browse");
+        Button newTimerBtn = new Button("Add Timer");
         
         VBox rootVbox = new VBox(5);
         HBox feedBackHbox = new HBox(5);
