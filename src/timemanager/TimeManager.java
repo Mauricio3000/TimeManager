@@ -52,6 +52,8 @@ public class TimeManager extends Application {
     MediaPlayer mediaPlayer;
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;
+    double version = 0.01;
+    String verStr = "" + version;
     
     
     @Override
@@ -133,7 +135,7 @@ public class TimeManager extends Application {
         
         scene.getStylesheets().add("timemanager/styleSheet.css");
         
-        primaryStage.setTitle("Time Manager v0.1");
+        primaryStage.setTitle("Time Manager v" + verStr);
         primaryStage.setScene(scene);
         
         //--- Button event handlers
@@ -174,8 +176,8 @@ public class TimeManager extends Application {
         alert.setTitle("About Time Manager");
         alert.setHeaderText(null);
         
-        String s = "\t\tTime Manager v0.1 \n";
-        s += "Copyright (C) 2018 Mauricio Santos-Hoyos\n";
+        String s = "\t\tTime Manager v" + verStr;
+        s += "\nCopyright (C) 2018 Mauricio Santos-Hoyos\n";
         s += "\t\tLicensed under GPLv3\n\n";
         s += "Alarm sound license:\ncreativecommons.org/licenses/by/3.0/legalcode";
         alert.setContentText(s);
