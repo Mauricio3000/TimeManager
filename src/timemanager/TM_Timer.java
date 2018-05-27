@@ -25,7 +25,11 @@ import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 public class TM_Timer {
-    MediaPlayer mediaPlayer;
+    /*
+    TM_Timer uses a Timeline as a counter, creating a keyframe per second
+    that tick down the UI combobox values.
+    */
+    MediaPlayer mediaPlayer;    // Created in TimeManager. Used to play the alarm sound
     
     Timeline timeline;
     ArrayList<KeyFrame> keys;
@@ -46,20 +50,22 @@ public class TM_Timer {
             String seconds)
     {
         this.keys = new ArrayList();
-        this.mediaPlayer = mediaPlayer;
-        this.startBtn = startBtn;
-        this.secCB = secCB;
-        this.hoursCB = hoursCB;
-        this.minCB = minCB;
-        this.hour = Integer.parseInt(hour);
-        this.minute = Integer.parseInt(minute);
-        this.seconds = Integer.parseInt(seconds);
-        
-
+        this.mediaPlayer = mediaPlayer; // Used to play the alarm sound
+        this.startBtn = startBtn;       // Need so it can be set to "Done"
+        this.secCB = secCB;             // Seconds combobox that will be ticked down
+        this.hoursCB = hoursCB;         // Hours combobox that will be ticked down
+        this.minCB = minCB;             // Minutes combobox that will be ticked down
+        this.hour = Integer.parseInt(hour);         // Starting hour value
+        this.minute = Integer.parseInt(minute);     // Starting minute value
+        this.seconds = Integer.parseInt(seconds);   // Starting seconds value
     }
     
     private int timeToSeconds()
-    {
+    {   /*
+        Convert Hours, minutes and seconds passed in by user to just seconds.
+        @return seconds Integer value of total seconds
+        */
+        
         int seconds = this.hour * 60 * 60; // Hours to seconds
         seconds += this.minute * 60; // Minutes to seconds
         seconds += this.seconds;
@@ -68,7 +74,13 @@ public class TM_Timer {
     }
     
     private void setKeys(int seconds)
-    {
+    {   /*
+        Create a key per second to be used in the Timeline. It's call back
+        will tickdown the comboboxs.
+        Store the keys in the array list keys.
+        @param seconds Integer value of total seconds
+        @return None
+        */
         for(int i=0; i<=seconds; i++)
         {
             keys.add(new KeyFrame( 
@@ -78,7 +90,11 @@ public class TM_Timer {
     }
     
     public void start()
-    {
+    {   /*
+        Create the Timeline, add the keys and then play the timeline.
+        @return None
+        */
+        
         setKeys(timeToSeconds());
         timeline = new Timeline();
         for(int i=0; i<keys.size();i++)
@@ -89,7 +105,10 @@ public class TM_Timer {
     }
     
     private void countDown()
-    {
+    {   /*
+        Count down the comboboxes, then play alarm when all are zero.
+        @return None
+        */
         int cb_hours = Integer.parseInt((String)hoursCB.getValue());
         int cb_mins = Integer.parseInt((String)minCB.getValue());
         int cb_secs = Integer.parseInt((String)secCB.getValue());
@@ -130,7 +149,13 @@ public class TM_Timer {
     }
 
     public void stop()
-    {
+    {   /*
+        Stop the timeline, set reference to null to 
+        garbage collect the timeline object, as continue uses 
+        a whole new TM_Timer.
+        @return None
+        */
         timeline.stop();
+        timeline = null;
     }
 }

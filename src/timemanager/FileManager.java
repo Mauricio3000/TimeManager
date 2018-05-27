@@ -29,17 +29,21 @@ import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
 public class FileManager {
-    String saveDirFileName = "TimeManager.savedir.csv"; 
-    String timerStateFileName = "TimeManager.timers.csv"; 
-    String timerLogsFileName = "TimeManager.timer.logs.csv";
-    String timerLogFile; 
-    String timerStateFile;
-    String saveDirFile;
-    Text feedback;
+    String saveDirFileName      = "TimeManager.savedir.csv";        
+    String timerStateFileName   = "TimeManager.timers.csv";      
+    String timerLogsFileName    = "TimeManager.timer.logs.csv";
+    String timerLogFile;        // Full path to read / write timer entries
+    String timerStateFile;      // Full path to read / write timer state file
+    String saveDirFile;         // Full path to read / write save dir state file
+    Text feedback;              // Text node to output data to user in UI
     String sep = File.separator;
     
     FileManager(String dir, Text feedback)
-    {
+    {   /*
+        Constructor
+        @param dir Base directory to be used for saving files
+        @param feedback Text node t display any feedback to user in UI
+        */
         
         timerLogFile = dir + sep + timerLogsFileName;
         timerStateFile = dir + sep + timerStateFileName;
@@ -49,6 +53,11 @@ public class FileManager {
     
     private void exceptionHandler(Exception e)
     {
+        /*
+        Used in catch clause to give user feedback
+        @param e Exception passed in by caller
+        @return None
+        */
         feedback.setText(e.getMessage());
         System.out.println(e.getMessage());
         System.out.println(Arrays.toString(e.getStackTrace())); 
@@ -56,7 +65,8 @@ public class FileManager {
     
     public ArrayList<String> getTimerState()
     {   /*
-        Read state file data and retrun as ArrayList<String> of file lines.
+        Read state file data and retrun as ArrayList of file lines.
+        @return ArrayList<String> Timer state file entries as String lines.
         */
         ArrayList<String> timerData = new ArrayList();
         
@@ -73,7 +83,8 @@ public class FileManager {
     
     public ArrayList<String> getSaveDirState()
     {   /*
-        Read state file data and retrun as ArrayList<String> of file lines.
+        Read state file data and retrun as ArrayList of file lines.
+        @return ArrayList<String> Timer state file entries as String lines.
         */
         ArrayList<String> appData = new ArrayList();
         
@@ -91,13 +102,16 @@ public class FileManager {
     public void writeTimerState(ArrayList<TimerDisplay> timers)
     {
         /*
-        Write exisiting timers and save file location to file.
+        Write exisiting timers to timer state file.
+        @param timers ArrayList used by TimeManager to store TimerDisplay objects
+        @return None
         */
         String s = "";
         for(int i=0; i<timers.size(); i++)
         {   
             s += timers.get(i).noteField.getText() + ",";
             
+            // Get initial data from objects if it has been stored
             if(timers.get(i).initial_hours != null)
             {
                 s += timers.get(i).initial_hours + ",";
@@ -105,7 +119,7 @@ public class FileManager {
                 s += timers.get(i).initial_seconds + "\n";
             }
             else
-            {
+            {   // Get data from comboboxes as intial data has not been stored
                 String temp;
                 temp = (String)timers.get(i).hoursCB.getValue();
                 s += temp + ",";
@@ -120,18 +134,32 @@ public class FileManager {
     }
     
     public void writeSaveDirState(Label saveFileLbl)
-    {
-        // Write dave dir
+    {   /*
+        Write log directory displayed in UI to file to persist 
+        it once app is closed.
+        @param saveFileLbl Label node from UI displaying where log file will be written.
+        @return None
+        */
         writeFile(saveFileLbl.getText(), saveDirFile);
     }
     
     public void updateLocation(String dir)
-    {
+    {   /*
+        Called by TimeManager when user changes the log directory
+        @param dir New directory selected by user
+        @return None
+        */
+        
         timerLogFile = dir + sep + timerLogsFileName;
     }
     
     public boolean appendToFile(String lines, String file)
-    {
+    {   /*
+        Append lines to a file
+        @param lines String of lines to write to file
+        @param file String of full path and filename to write to
+        @return boolean True if successfully appened, false otherwise
+        */
         try 
         {
             if(checkForFile(file))
@@ -150,7 +178,12 @@ public class FileManager {
     }
     
     public boolean writeFile(String lines, String file)
-    {
+    {   /*
+        Writes a new file, overwriting the file if it exists.
+        @param lines String of lines to write to file
+        @param file String of full path and filename to write to
+        @return boolean True if successfully written, false otherwise
+        */
         File f = new File(file);
         
         if(f.isFile())
@@ -173,7 +206,11 @@ public class FileManager {
     }
     
     public boolean checkForFile(String file)
-    {
+    {   /*
+        Check if given file exists. If it dowsn't, create it.
+        @param file String with full path and nameof file to check
+        @return boolean True if it exists or it was successfully created, false if it doesn't
+        */
         File f = new File(file);
         if(f.isFile()) return true; 
         else
@@ -181,12 +218,13 @@ public class FileManager {
             try 
             {
                 f.createNewFile();
+                return true;
             }
             catch(IOException e)
             { 
                 exceptionHandler(e); 
+                return false;
             }
-            return true;
         }
     }
 }

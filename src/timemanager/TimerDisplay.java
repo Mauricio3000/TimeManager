@@ -19,7 +19,6 @@ package timemanager;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -34,47 +33,56 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-/**
- *
- * @author mauricio
- */
+
 public class TimerDisplay {
-    ArrayList<TimerDisplay> timers;
-    MediaPlayer mediaPlayer;
-    FileManager fm;
-    TM_Timer timer;
-    Text feedback;
-    TextField noteField;
-    ComboBox hoursCB;
-    ComboBox minCB;
-    ComboBox secCB;
-    CheckBox cb1;
+    /*
+    UI for the actual timer, TM_Timer.
+    Write entries into log file upon reset or removal.
+    TimerEntry in log: time stamp, hours, minutes, seconds, custom note
+    */
+    ArrayList<TimerDisplay> timers;     // List of TimerDisplay objects created by TimeManager
+    MediaPlayer mediaPlayer;            // MediaPlayer created in TimeManger
+    FileManager fm;                     // Used to manage timer log file
+    TM_Timer timer;                     // The actual timer
+    Text feedback;                      // Used to display feedback in UI
+    TextField noteField;                // Custom text
+    ComboBox hoursCB;                   // Hours selector
+    ComboBox minCB;                     // Minutes selector
+    ComboBox secCB;                     // Seconds selector
+
     
-    String initial_hours;
-    String initial_minutes;
-    String initial_seconds;
-    String current_hours;
-    String current_minutes;
-    String current_seconds;
+    String initial_hours;   // If timer is started, store intial values here
+    String initial_minutes; // If timer is started, store intial values here
+    String initial_seconds; // If timer is started, store intial values here
+    String current_hours;   // If timer is paused, store current values here
+    String current_minutes; // If timer is paused, store current values here
+    String current_seconds; // If timer is paused, store current values here
     
-    Button startBtn;
-    Button resetBtn;
-    Button removeBtn;
+    Button startBtn;        // Start | Pause | Continue to timer
+    Button resetBtn;        // Reset the timer
+    Button removeBtn;       // Remove the timer from the UI and timers list
+    CheckBox cb1;           // Save log entry checkbox
     
-    VBox container;
-    VBox parent;
+    VBox container;         // Conatiner for all nodes
+    VBox parent;            // Parent container created by TimeManger
             
     TimerDisplay(FileManager fm, 
-                    Text feedback, 
-                    MediaPlayer mediaPlayer,
-                    ArrayList<TimerDisplay> timers)
-    {
+                Text feedback, 
+                MediaPlayer mediaPlayer,
+                ArrayList<TimerDisplay> timers)
+    {   /*
+        Constructor
+        @param fm FileManager to manage timer log entries
+        @param feedback Node used to display feedback in UI
+        @param mediaPlayer MediaPlayer for alarm sound created in TimeManger
+        @param timers List of TimerDisplay objects managed by timeManager
+        */
         this.fm = fm;
         this.feedback = feedback;
         this.mediaPlayer = mediaPlayer;
         this.timers = timers;
         
-        //--- Create Data structures
+        //--- Create combobox data structures
         ObservableList<String> hoursList = 
                 FXCollections.observableArrayList();
         ObservableList<String> minuteList = 
@@ -82,7 +90,7 @@ public class TimerDisplay {
         ObservableList<String> secondsList = 
                 FXCollections.observableArrayList();
         
-        //--- Initialize data structures
+        //--- Initialize combobox data structures
         for(int i=0; i<24; i++){ hoursList.add(String.format("%02d", i)); }
         for(int i=0; i<60; i++){ 
             minuteList.add(String.format("%02d", i)); 
@@ -94,39 +102,35 @@ public class TimerDisplay {
         HBox hbox = new HBox(5);  // TimerDisplay comboboxes container 
         HBox hbBtn = new HBox(5); // Buttons container
         
-        
         hoursCB = new ComboBox();
         Label sep1 = new Label(":");
         minCB = new ComboBox();
         Label sep2 = new Label(":");
         secCB = new ComboBox();
         
-        Label noteLbl = new Label("Memo:");
         noteField = new TextField();
         
         startBtn = new Button("Start");
         resetBtn = new Button("Reset");
-        resetBtn.setDisable(true);
         removeBtn = new Button("Remove");
-        
         cb1 = new CheckBox("Save");
+        
+        //--- Tool tips
+        startBtn.setTooltip(new Tooltip("Start/Pause/Continue this timer"));
+        resetBtn.setTooltip(new Tooltip("Reset this timer to it's intial values"));
+        removeBtn.setTooltip(new Tooltip("Remove this timer"));
         cb1.setTooltip(new Tooltip("Save log to file on 'Reset' or 'Remove'"));
+        
+        //--- Set UI intial state
+        resetBtn.setDisable(true);
         cb1.setSelected(true);
         
-        //--- Format UI nodes
-        Font uiFont = Font.font("Tahoma", FontWeight.MEDIUM, 14);
-        Font btnFont = Font.font("Tahoma", FontWeight.MEDIUM, 13);
+        //--- Associate UI nodes to style tags
+        hbox.getStyleClass().add("hbox");
+        hbBtn.getStyleClass().add("hbox");
+        container.getStyleClass().add("vbox");
         
-        noteLbl.setFont(uiFont);
-        startBtn.setFont(btnFont);
-        resetBtn.setFont(btnFont);
-        removeBtn.setFont(btnFont);
-        cb1.setFont(btnFont);
-        
-        hbox.setAlignment(Pos.CENTER);
-        hbBtn.setAlignment(Pos.CENTER);
-        container.setAlignment(Pos.CENTER);
-        
+        //--- Initialize UI data
         hoursCB.setItems(hoursList);
         minCB.setItems(minuteList);
         secCB.setItems(secondsList);
@@ -134,13 +138,11 @@ public class TimerDisplay {
         hoursCB.setValue("00");
         minCB.setValue("00");
         secCB.setValue("00");
- 
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
         
         //--- Compose UI nodes
         hbBtn.getChildren().addAll(startBtn, resetBtn, removeBtn);
-        hbox.getChildren().addAll(noteField,hoursCB,
-                                    sep1,minCB,sep2,secCB,hbBtn, cb1);
+        hbox.getChildren().addAll(noteField, hoursCB, sep1, minCB, 
+                                    sep2, secCB, hbBtn, cb1);
         container.getChildren().addAll(hbox);
         
         //--- Event handlers
@@ -160,7 +162,15 @@ public class TimerDisplay {
     public VBox getVBox(){ return container; } 
     
     public void startBtnClicked()
-    { // Start button handler
+    {   /*
+        startButton handler.
+        If button text on click is:
+        - Start: Save initial timer data, disable UI, start the timer
+        - Pause: Stop the timer, enable UI, save current timer data
+        - Continue: Start timer from current state, disable UI
+        - Done: Stop alarm sound, reset timer
+        @return None
+        */
         String text = startBtn.getText();
         
         switch(text)
@@ -244,7 +254,12 @@ public class TimerDisplay {
     }
     
     public void resetClicked()
-    {
+    {   /*
+        resetBtn handler.
+        If "save" is checked, create entry in log file.
+        Restore comboboxes to intial values and enable UI.
+        @return None
+        */
         // If save checked
         if(cb1.isSelected()) saveEntry();
         
@@ -266,7 +281,12 @@ public class TimerDisplay {
     }
     
     public void removeClicked()
-    {
+    {   /*
+        removeBtn handler.
+        If "save" is checked, create entry in log file.
+        Remove the timer from the UI and the timers list.
+        @return None
+        */
         // If save checked
         if(cb1.isSelected()) saveEntry();
         
@@ -278,7 +298,12 @@ public class TimerDisplay {
     }
     
     private void saveEntry()
-    {
+    {   /*
+        saveBtn handler.
+        If intial data is not null, meaning that the timer has been used,
+        then create an entry in the log file and send feedback to UI.
+        @return None
+        */
         if(initial_hours != null)
         {
             int[] start = {Integer.parseInt(initial_hours),

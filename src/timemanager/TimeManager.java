@@ -43,42 +43,38 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-/**
- *
- * @author mauricio
- */
 
 public class TimeManager extends Application {
     /*
-        Manage multiple timers with custom memos.
-        Upon reset or removal of a timer, 
-        a record is stored of the memo and the duration.
+        Use multiple timers with custom notes.
+        Upon reset or removal of a timer, a record is stored of the note and the duration.
         The user can choose in which directory to store the timer log file.
-        The application state file will always be in the application
-        run directory.
+        The application state file will always be in the application run directory.
     */
-    ArrayList<TimerDisplay> timers;
-    String sep = File.separator;
-    Text feedback;
-    MediaPlayer mediaPlayer;
-    FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
-    Label saveFileLbl;
-    double version = 0.02;
-    String verStr = "" + version;
+    ArrayList<TimerDisplay> timers;     // List of created timerDisplay objects
+    String sep = File.separator;        // Path seperator
+    Text feedback;                      // Text node used in UI to give user feedback
+    MediaPlayer mediaPlayer;            // Used to play alarm sound
     
+                                        // Manage state and log files
+    FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
+    Label saveFileLbl;                  // Label UI node that displays log file directory
+    double version = 0.03;              // Current app version
+    String verStr = "" + version;       // App version as string
     
     @Override
     public void start(Stage primaryStage) {
-        timers = new ArrayList();
-        BorderPane root = new BorderPane();
-        root.getStyleClass().add("borderpane");
+        // Second stage of a JavaFX application
+        
+        timers = new ArrayList();               // Instantiate the timers list
+        BorderPane root = new BorderPane();     // Root UI node
+        root.getStyleClass().add("borderpane"); // Associate to styling label
         
         //--- Menu bar
         MenuBar menuBar = new MenuBar();
         menuBar.prefWidthProperty().bind(primaryStage.widthProperty());
-        root.setTop(menuBar);
         
-        // File menu - about, exit
+        //--- File menus - about, exit
         Menu aboutMenu = new Menu("About");
         MenuItem aboutMenuItem = new MenuItem("About");
         MenuItem exitMenuItem = new MenuItem("Exit");
@@ -88,44 +84,42 @@ public class TimeManager extends Application {
                                     exitMenuItem);
         menuBar.getMenus().addAll(aboutMenu);
         
+        //--- File menu event handlers
         aboutMenuItem.setOnAction(actionEvent -> aboutPopup());
         exitMenuItem.setOnAction(actionEvent -> Platform.exit());
         
         //--- Create UI nodes
-        Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
-        
         feedback = new Text();
         Label saveFileTitleLbl = new Label("Log file directory: ");
         saveFileLbl = new Label(System.getProperty("user.dir"));
-        saveFileLbl.setPadding(new Insets(4));
-        saveFileLbl.setId("filepath");
+        
         Button saveFileBtn = new Button("Browse");
         Button newTimerBtn = new Button("Add Timer");
         
-        VBox rootVbox = new VBox(5);
-        HBox feedBackHbox = new HBox(5);
+        VBox topVbox = new VBox(5);
         HBox saveFileLayout = new HBox(10);
-        rootVbox.setPadding(new Insets(1));
         HBox addTimerLayout = new HBox(10);
+        VBox centerVbox = new VBox(5);
         VBox timersVbox = new VBox(5);
+        HBox feedBackHbox = new HBox(5);
+        
+        topVbox.setPadding(new Insets(1));
+        centerVbox.setPadding(new Insets(1));
         timersVbox.setPadding(new Insets(1));
         
-        rootVbox.getStyleClass().add("vbox");
+        //--- Associate UI nodes to style tags
+        saveFileLbl.setId("filepath");
+        centerVbox.getStyleClass().add("vbox");
         feedBackHbox.getStyleClass().add("hbox");
         saveFileLayout.getStyleClass().add("hbox");
         addTimerLayout.getStyleClass().add("hbox");
         timersVbox.getStyleClass().add("vbox");
         
         //--- Format UI nodes
-        saveFileLayout.getChildren().addAll(saveFileTitleLbl, 
-                                            saveFileLbl, 
-                                            saveFileBtn);
-        addTimerLayout.getChildren().addAll(newTimerBtn);
-        
+        Font feedbackFont = Font.font("Tahoma", FontWeight.BOLD, 13);
+        saveFileLbl.setPadding(new Insets(4));
         feedback.setFont(feedbackFont);
         feedback.setFill(Color.BEIGE);
-        
-        feedBackHbox.getChildren().addAll(feedback);
         
         //--- Setup the MediaPlayer
         String soundFile = "alarm_01.mp3";
@@ -134,7 +128,7 @@ public class TimeManager extends Application {
         mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
         MediaView mediaView = new MediaView(mediaPlayer);
         
-        //--- Load saved state saveFileLbl
+        //--- Load saved state to saveFileLbl node
         ArrayList<String> appData = fm.getSaveDirState();
         for(int i=0; i<appData.size(); i++)
         {
@@ -151,16 +145,27 @@ public class TimeManager extends Application {
             createTimer(timersVbox, data[1], data[2], data[3], data[0]);
         }
         
-        //--- Load UI into rootVbox
-        rootVbox.getChildren().addAll(saveFileLayout, 
-                                    addTimerLayout, 
-                                    timersVbox,
-                                    feedBackHbox,
-                                    mediaView);
+        //--- Compose UI
+        saveFileLayout.getChildren().addAll(saveFileTitleLbl, 
+                                            saveFileLbl, 
+                                            saveFileBtn);
         
-        root.setCenter(rootVbox);
+        addTimerLayout.getChildren().addAll(newTimerBtn);
+        
+        topVbox.getChildren().addAll(menuBar,
+                            saveFileLayout,
+                            addTimerLayout);
+        
+        centerVbox.getChildren().addAll(timersVbox,
+                                        mediaView);
+        feedBackHbox.getChildren().addAll(feedback);
+
+        root.setTop(topVbox);
+        root.setCenter(centerVbox);
+        root.setBottom(feedBackHbox);
+        
+        //--- Create the scene
         Scene scene = new Scene(root, 1000, 400);
-        
         scene.getStylesheets().add("timemanager/styleSheet.css");
         
         primaryStage.setTitle("Time Manager v" + verStr);
@@ -191,13 +196,27 @@ public class TimeManager extends Application {
     
     @Override
     public void stop()
-    {
+    {   /*
+        Second to last stage of a JavaFX application's shutdown cycle.
+        Application state preservation logic in here.
+        */
+        // Save all timers currently in UI to file
         fm.writeTimerState(timers);
+        // Save current log directory, which  user may have changed, to file
         fm.writeSaveDirState(saveFileLbl);
     }
     
     public void createTimer(VBox parent, String h, String m, String s, String n)
-    {
+    {   /*
+        Create a TimerDisplay object, add it to the parent node
+        and add it to the timers list.
+        @param parent VBox container to place the timer
+        @param h Hours setting
+        @param m Minutes setting
+        @param s Seconds setting
+        @param n Note text
+        @return None
+        */
         TimerDisplay timerDisplay = 
             new TimerDisplay(fm, feedback, mediaPlayer, timers);
         timerDisplay.parent = parent;
@@ -205,15 +224,18 @@ public class TimeManager extends Application {
         timerDisplay.minCB.setValue(m);
         timerDisplay.secCB.setValue(s);
         timerDisplay.noteField.setText(n);
+        
         parent.getChildren().add(timerDisplay.getVBox());
+        
         timers.add(timerDisplay);
     }
     
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     private void aboutPopup() {
+        /*
+        Called by MenuBar > About
+        Display copyright and licensing information
+        @return None
+        */
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("About Time Manager");
         alert.setHeaderText(null);
@@ -227,4 +249,7 @@ public class TimeManager extends Application {
         alert.showAndWait();
     }
     
+    public static void main(String[] args) {
+        launch(args);
+    }
 }
