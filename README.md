@@ -14,9 +14,8 @@ Manage your time by using multiple timers that can log how you spend it.
 - Place these java files in /src directory
 - Build
 
-# Use
-Double click project/dist/TimerFX.jar file. 
-Ensure alarm sound is in the same folder.
+
+
 
 ###### Alarm sound
 
