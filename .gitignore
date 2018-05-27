@@ -1,6 +1,6 @@
-dist/
 build/
 nbproject/
+*.csv
 
 # Compiled class file
 *.class
