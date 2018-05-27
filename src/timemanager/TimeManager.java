@@ -29,6 +29,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -51,6 +52,7 @@ public class TimeManager extends Application {
         The user can choose in which directory to store the timer log file.
         The application state file will always be in the application run directory.
     */
+    String changeLog;
     ArrayList<TimerDisplay> timers;     // List of created timerDisplay objects
     String sep = File.separator;        // Path seperator
     Text feedback;                      // Text node used in UI to give user feedback
@@ -59,12 +61,32 @@ public class TimeManager extends Application {
                                         // Manage state and log files
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;                  // Label UI node that displays log file directory
-    double version = 0.04;              // Current app version
+    double version = 0.05;              // Current app version
     String verStr = "" + version;       // App version as string
     
     @Override
     public void start(Stage primaryStage) {
         // Second stage of a JavaFX application
+        changeLog = "Change Log\n";
+        changeLog += "v0.05:\n";
+        changeLog += "\tAdd changelog to about popup window\n";       
+        changeLog += "v0.04:\n";
+        changeLog += "\tFix off by one logic when counting down from hours to minutes\n";
+        changeLog += "v0.03:\n";
+        changeLog += "\tMemory optimization in timer code\n";
+        changeLog += "\tRecomposed UI\n";
+        changeLog += "v0.02:\n";
+        changeLog += "\tPersist app state after exiting\n";
+        changeLog += "\tFixed with for most UI elements\n";
+        changeLog += "v0.01:\n";
+        changeLog += "\tInitial release\n";
+        
+        
+        
+        
+        
+        
+        
         
         timers = new ArrayList();               // Instantiate the timers list
         BorderPane root = new BorderPane();     // Root UI node
@@ -238,13 +260,20 @@ public class TimeManager extends Application {
         */
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("About Time Manager");
-        alert.setHeaderText(null);
         
-        String s = "\t\tTime Manager v" + verStr;
-        s += "\nCopyright (C) 2018 Mauricio Santos-Hoyos\n";
-        s += "\t\tLicensed under GPLv3\n\n";
-        s += "Alarm sound license:\ncreativecommons.org/licenses/by/3.0/legalcode";
-        alert.setContentText(s);
+        String header = "\t\tTime Manager v" + verStr;
+        header += "\nCopyright (C) 2018 Mauricio Santos-Hoyos\n";
+        header += "\t\tLicensed under GPLv3\n\n";
+        header += "Alarm sound license:\ncreativecommons.org/licenses/by/3.0/legalcode";
+        alert.setHeaderText(header);
+        
+        
+        
+        ScrollPane sp = new ScrollPane();
+        Text text = new Text();
+        text.setText(changeLog);
+        sp.setContent(text);
+        alert.getDialogPane().setExpandableContent(sp);
 
         alert.showAndWait();
     }
