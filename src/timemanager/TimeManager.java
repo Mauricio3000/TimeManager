@@ -59,7 +59,7 @@ public class TimeManager extends Application {
                                         // Manage state and log files
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;                  // Label UI node that displays log file directory
-    double version = 0.03;              // Current app version
+    double version = 0.04;              // Current app version
     String verStr = "" + version;       // App version as string
     
     @Override
