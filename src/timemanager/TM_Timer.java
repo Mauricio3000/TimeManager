@@ -109,42 +109,46 @@ public class TM_Timer {
         Count down the comboboxes, then play alarm when all are zero.
         @return None
         */
+        
+        // Get current combobox values
         int cb_hours = Integer.parseInt((String)hoursCB.getValue());
         int cb_mins = Integer.parseInt((String)minCB.getValue());
         int cb_secs = Integer.parseInt((String)secCB.getValue());
-        
-        String s;
-        if(cb_secs == 0)
+
+        if(cb_secs == 0) // Seconds are zero
         {
-            if(cb_mins == 0)
+            if(cb_mins == 0) // Minutes are zero
             {
-                if(cb_hours == 0)
+                if(cb_hours == 0) // Hours are zero
                 {
+                    // All comboboxes zero
                     startBtn.setText("Done");
                     mediaPlayer.play();
                 }
-                else
+                else // Hours not zero
                 {
-                    s = String.format("%02d", (cb_hours - 1));
-                    hoursCB.setValue(s);
+                    // Reduce hours by one
+                    hoursCB.setValue(String.format("%02d", (cb_hours - 1)));
                     
-                    s = String.format("%02d", (59));
-                    minCB.setValue(s);
+                    // Set minutes to 60, since minutes were zero
+                    // Use 60 instead of 59, as next check will instantly 
+                    // reduce minutes by 1
+                    minCB.setValue(String.format("%02d", (60)));
                 }
             }
-            else
+            else // Minutes are not zero
             {
-                s = String.format("%02d", (cb_mins - 1));
-                minCB.setValue(s);
+                // Reduce minutes by one
+                minCB.setValue(String.format("%02d", (cb_mins - 1)));
                 
-                s = String.format("%02d", (59));
-                secCB.setValue(s);
+                // Set seconds to 59, since they were zero
+                secCB.setValue(String.format("%02d", (59)));
             }
         }
-        else
+        else // Seconds are not zero
         {
-            s = String.format("%02d", (cb_secs - 1));
-            secCB.setValue(s);
+            // Reduce seconds by one
+            secCB.setValue(String.format("%02d", (cb_secs - 1)));
         }
     }
 

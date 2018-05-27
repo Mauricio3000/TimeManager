@@ -1,6 +1,13 @@
 build/
 nbproject/
+
+# Log and state files
 *.csv
+
+# Unwanted stuff in dist/
+web-files/
+*.html
+*.jnlp
 
 # Compiled class file
 *.class
