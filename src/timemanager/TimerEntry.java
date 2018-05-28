@@ -33,7 +33,6 @@ public class TimerEntry {
     @param note User note from TimerDisplay
     @param start Timer initial [hours, minutes, seconds]
     @param end Timer comboboxes [hours, minutes, seconds]
-    @return String formatted as a log entry using given data
     */
     TimerEntry(String note, int[] start, int[] end)
     {   

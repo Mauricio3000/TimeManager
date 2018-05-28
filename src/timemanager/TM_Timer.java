@@ -95,7 +95,6 @@ public class TM_Timer {
     
     /**
     Create the Timeline, add the keys and then play the timeline.
-    @return None
     */
     public void start()
     {   

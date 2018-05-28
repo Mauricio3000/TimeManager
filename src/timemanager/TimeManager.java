@@ -56,6 +56,9 @@ import javafx.stage.Stage;
     Upon reset or removal of a timer, a record is stored of the note and the duration.
     The user can choose in which directory to store the timer log file.
     The application state file will always be in the application run directory.
+ 
+ * @author Mauricio Santos-Hoyos
+ * @version 0.06
 */
 public class TimeManager extends Application {
     String changeLog;
@@ -262,7 +265,7 @@ public class TimeManager extends Application {
     }
     
     /**
-    Called by MenuBar > About
+    Called by MenuBar About
     Display copyright and licensing information
     */
     private void aboutPopup() {
@@ -288,7 +291,7 @@ public class TimeManager extends Application {
     
     /**
      *
-     * @param args
+     * @param args Command line arguments passed by caller
      */
     public static void main(String[] args) {
         launch(args);

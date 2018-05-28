@@ -64,7 +64,7 @@ public class FileManager {
     
     /**
     Read state file data and retrun as ArrayList of file lines.
-    @return ArrayList<String> Timer state file entries as String lines.
+    @return ArrayList Timer state file entries as String lines.
     */
     public ArrayList<String> getTimerState()
     {   
@@ -83,7 +83,7 @@ public class FileManager {
     
     /**
     Read state file data and retrun as ArrayList of file lines.
-    @return ArrayList<String> Timer state file entries as String lines.
+    @return ArrayList Timer state file entries as String lines.
     */
     public ArrayList<String> getSaveDirState()
     {   
