@@ -5,8 +5,7 @@ nbproject/
 *.csv
 
 # Unwanted stuff in dist/
-web-files/
-*.html
+dist/web-files/
 *.jnlp
 
 # Compiled class file
