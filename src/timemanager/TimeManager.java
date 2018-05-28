@@ -14,6 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+/*
+Todo:
+- View log file
+- Persist Save Checkbox setting
+- Reorder timers in UI
+*/
 package timemanager;
 
 import java.io.File;
