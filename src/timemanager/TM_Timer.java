@@ -17,6 +17,7 @@
 package timemanager;
 
 import java.util.ArrayList;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.control.Button;
@@ -24,11 +25,12 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+/**
+TM_Timer uses a Timeline as a counter, creating a keyframe per second
+that tick down the UI combobox values.
+*/
 public class TM_Timer {
-    /*
-    TM_Timer uses a Timeline as a counter, creating a keyframe per second
-    that tick down the UI combobox values.
-    */
+    
     MediaPlayer mediaPlayer;    // Created in TimeManager. Used to play the alarm sound
     
     Timeline timeline;
@@ -60,12 +62,12 @@ public class TM_Timer {
         this.seconds = Integer.parseInt(seconds);   // Starting seconds value
     }
     
+    /**
+    Convert Hours, minutes and seconds passed in by user to just seconds.
+    @return seconds Integer value of total seconds
+    */
     private int timeToSeconds()
-    {   /*
-        Convert Hours, minutes and seconds passed in by user to just seconds.
-        @return seconds Integer value of total seconds
-        */
-        
+    {   
         int seconds = this.hour * 60 * 60; // Hours to seconds
         seconds += this.minute * 60; // Minutes to seconds
         seconds += this.seconds;
@@ -73,15 +75,17 @@ public class TM_Timer {
         return seconds;
     }
     
+    /**
+    Create a key per second to be used in the Timeline. It's callback
+    will tickdown the comboboxs.
+    Store the keys in the array list keys.
+    @param seconds Integer value of total seconds
+    */
     private void setKeys(int seconds)
-    {   /*
-        Create a key per second to be used in the Timeline. It's call back
-        will tickdown the comboboxs.
-        Store the keys in the array list keys.
-        @param seconds Integer value of total seconds
-        @return None
-        */
-        for(int i=0; i<=seconds; i++)
+    {   
+        // Plus 10 padding eliminates flaw where not enough keys are made
+        // For durations greater than 2 hours.
+        for(int i=0; i<=(seconds+10); i++)
         {
             keys.add(new KeyFrame( 
                     Duration.millis(1000*i), 
@@ -89,12 +93,12 @@ public class TM_Timer {
         }
     }
     
+    /**
+    Create the Timeline, add the keys and then play the timeline.
+    @return None
+    */
     public void start()
-    {   /*
-        Create the Timeline, add the keys and then play the timeline.
-        @return None
-        */
-        
+    {   
         setKeys(timeToSeconds());
         timeline = new Timeline();
         for(int i=0; i<keys.size();i++)
@@ -104,25 +108,27 @@ public class TM_Timer {
         timeline.play();
     }
     
+    /**
+    Count down the comboboxes, then play alarm when all are zero.
+    */
     private void countDown()
-    {   /*
-        Count down the comboboxes, then play alarm when all are zero.
-        @return None
-        */
-        
+    {   
         // Get current combobox values
         int cb_hours = Integer.parseInt((String)hoursCB.getValue());
         int cb_mins = Integer.parseInt((String)minCB.getValue());
         int cb_secs = Integer.parseInt((String)secCB.getValue());
-
+        
         if(cb_secs == 0) // Seconds are zero
         {
             if(cb_mins == 0) // Minutes are zero
             {
                 if(cb_hours == 0) // Hours are zero
-                {
+                {   
                     // All comboboxes zero
                     startBtn.setText("Done");
+                    // Ensure any extra keys don't continue after reseting
+                    timeline.stop(); 
+                    // Sound the alarm
                     mediaPlayer.play();
                 }
                 else // Hours not zero
@@ -151,14 +157,14 @@ public class TM_Timer {
             secCB.setValue(String.format("%02d", (cb_secs - 1)));
         }
     }
-
+    
+    /**
+    Stop the timeline, set reference to null to 
+    garbage collect the timeline object, as continue uses 
+    a whole new TM_Timer.
+    */
     public void stop()
-    {   /*
-        Stop the timeline, set reference to null to 
-        garbage collect the timeline object, as continue uses 
-        a whole new TM_Timer.
-        @return None
-        */
+    {   
         timeline.stop();
         timeline = null;
     }

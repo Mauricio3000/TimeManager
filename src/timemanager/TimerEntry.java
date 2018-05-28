@@ -18,24 +18,25 @@ package timemanager;
 
 import java.util.Date;
 
+/**
+Create a String to write to timer log file.
+*/
 public class TimerEntry {
-    /*
-    Create a String to write to timer log file.
-    */
     int[] start;
     int[] end;
     String note;
     Date now;
     String line;
     
+    /**
+    Constructor.
+    @param note User note from TimerDisplay
+    @param start Timer initial [hours, minutes, seconds]
+    @param end Timer comboboxes [hours, minutes, seconds]
+    @return String formatted as a log entry using given data
+    */
     TimerEntry(String note, int[] start, int[] end)
-    {   /*
-        Constructor.
-        @param note User note from TimerDisplay
-        @param start Timer initial [hours, minutes, seconds]
-        @param end Timer comboboxes [hours, minutes, seconds]
-        @return String formatted as a log entry using given data
-        */
+    {   
         this.note = note;
         this.start = start;
         this.end = end;
@@ -43,23 +44,24 @@ public class TimerEntry {
         
         formatLine();
     }
-
-    public String formatLine() {
-        /*
-        Return a formated string to be used as timer log entry
-        @return String Format: timestamp, hh:mm:ss, note
-        */
+    
+    /**
+    Return a formated string to be used as timer log entry
+    @return String Format: timestamp, hh:mm:ss, note
+    */
+    public String formatLine() 
+    {
         return now.toString() + ", " + duration() + ", " + note + "\n"; 
     }
-
+    
+    /**
+    Take give int array [hh,mm,ss] representing a time and
+    return it as total seconds
+    @param t int array [hh,mm,ss] representing a time
+    @return int Total seconds
+    */
     private int timeToSeconds(int[] t) 
-    {   /*
-        Take give int array [hh,mm,ss] representing a time and
-        return it as total seconds
-        @param t int array [hh,mm,ss] representing a time
-        @return int Total seconds
-        */
-        
+    {   
         int hours = t[0];
         int mins = t[1];
         int secs = t[2];
@@ -67,10 +69,11 @@ public class TimerEntry {
         return (hours*60*60)+(mins*60)+secs;
     }
     
+    /**
+    @return String that represents the duration [hh,mm,ss] - [hh,mm,ss]
+    */
     private String duration()
-    {   /*
-        @return String that represents the duration [hh,mm,ss] - [hh,mm,ss]
-        */
+    {   
         int a = timeToSeconds(start);
         int b = timeToSeconds(end);
         

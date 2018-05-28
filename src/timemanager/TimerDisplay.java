@@ -33,13 +33,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
-
+/**
+UI for the actual timer, TM_Timer.
+Write entries into log file upon reset or removal.
+TimerEntry in log: time stamp, hours, minutes, seconds, custom note
+*/
 public class TimerDisplay {
-    /*
-    UI for the actual timer, TM_Timer.
-    Write entries into log file upon reset or removal.
-    TimerEntry in log: time stamp, hours, minutes, seconds, custom note
-    */
+    
     ArrayList<TimerDisplay> timers;     // List of TimerDisplay objects created by TimeManager
     MediaPlayer mediaPlayer;            // MediaPlayer created in TimeManger
     FileManager fm;                     // Used to manage timer log file
@@ -65,18 +65,19 @@ public class TimerDisplay {
     
     VBox container;         // Conatiner for all nodes
     VBox parent;            // Parent container created by TimeManger
-            
+    
+    /**
+    Constructor
+    @param fm FileManager to manage timer log entries
+    @param feedback Node used to display feedback in UI
+    @param mediaPlayer MediaPlayer for alarm sound created in TimeManger
+    @param timers List of TimerDisplay objects managed by timeManager
+    */        
     TimerDisplay(FileManager fm, 
                 Text feedback, 
                 MediaPlayer mediaPlayer,
                 ArrayList<TimerDisplay> timers)
-    {   /*
-        Constructor
-        @param fm FileManager to manage timer log entries
-        @param feedback Node used to display feedback in UI
-        @param mediaPlayer MediaPlayer for alarm sound created in TimeManger
-        @param timers List of TimerDisplay objects managed by timeManager
-        */
+    {   
         this.fm = fm;
         this.feedback = feedback;
         this.mediaPlayer = mediaPlayer;
@@ -161,16 +162,16 @@ public class TimerDisplay {
     
     public VBox getVBox(){ return container; } 
     
+    /**
+    startButton handler.
+    If button text on click is:
+    - Start: Save initial timer data, disable UI, start the timer
+    - Pause: Stop the timer, enable UI, save current timer data
+    - Continue: Start timer from current state, disable UI
+    - Done: Stop alarm sound, reset timer
+    */
     public void startBtnClicked()
-    {   /*
-        startButton handler.
-        If button text on click is:
-        - Start: Save initial timer data, disable UI, start the timer
-        - Pause: Stop the timer, enable UI, save current timer data
-        - Continue: Start timer from current state, disable UI
-        - Done: Stop alarm sound, reset timer
-        @return None
-        */
+    {   
         String text = startBtn.getText();
         
         switch(text)
@@ -253,13 +254,13 @@ public class TimerDisplay {
         }
     }
     
+    /**
+    resetBtn handler.
+    If "save" is checked, create entry in log file.
+    Restore comboboxes to intial values and enable UI.
+    */
     public void resetClicked()
-    {   /*
-        resetBtn handler.
-        If "save" is checked, create entry in log file.
-        Restore comboboxes to intial values and enable UI.
-        @return None
-        */
+    {   
         // If save checked
         if(cb1.isSelected()) saveEntry();
         
@@ -280,13 +281,13 @@ public class TimerDisplay {
         secCB.setDisable(false);
     }
     
+    /**
+    removeBtn handler.
+    If "save" is checked, create entry in log file.
+    Remove the timer from the UI and the timers list.
+    */
     public void removeClicked()
-    {   /*
-        removeBtn handler.
-        If "save" is checked, create entry in log file.
-        Remove the timer from the UI and the timers list.
-        @return None
-        */
+    {   
         // If save checked
         if(cb1.isSelected()) saveEntry();
         
@@ -297,13 +298,13 @@ public class TimerDisplay {
         timers.remove(this);
     }
     
+    /**
+    saveBtn handler.
+    If intial data is not null, meaning that the timer has been used,
+    then create an entry in the log file and send feedback to UI.
+    */
     private void saveEntry()
-    {   /*
-        saveBtn handler.
-        If intial data is not null, meaning that the timer has been used,
-        then create an entry in the log file and send feedback to UI.
-        @return None
-        */
+    {   
         if(initial_hours != null)
         {
             int[] start = {Integer.parseInt(initial_hours),

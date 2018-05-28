@@ -44,14 +44,13 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
-
+/**
+    Use multiple timers with custom notes.
+    Upon reset or removal of a timer, a record is stored of the note and the duration.
+    The user can choose in which directory to store the timer log file.
+    The application state file will always be in the application run directory.
+*/
 public class TimeManager extends Application {
-    /*
-        Use multiple timers with custom notes.
-        Upon reset or removal of a timer, a record is stored of the note and the duration.
-        The user can choose in which directory to store the timer log file.
-        The application state file will always be in the application run directory.
-    */
     String changeLog;
     ArrayList<TimerDisplay> timers;     // List of created timerDisplay objects
     String sep = File.separator;        // Path seperator
@@ -61,13 +60,15 @@ public class TimeManager extends Application {
                                         // Manage state and log files
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;                  // Label UI node that displays log file directory
-    double version = 0.05;              // Current app version
+    double version = 0.06;              // Current app version
     String verStr = "" + version;       // App version as string
     
     @Override
     public void start(Stage primaryStage) {
         // Second stage of a JavaFX application
         changeLog = "Change Log\n";
+        changeLog += "v0.06:\n";
+        changeLog += "\tBugfix: Alarm not sounding on timers set to more than an hour\n"; 
         changeLog += "v0.05:\n";
         changeLog += "\tAdd changelog to about popup window\n";       
         changeLog += "v0.04:\n";
@@ -216,29 +217,30 @@ public class TimeManager extends Application {
         primaryStage.show();
     }
     
+    /**
+    Second to last stage of a JavaFX application's shutdown cycle.
+    Application state preservation logic in here.
+    */
     @Override
     public void stop()
-    {   /*
-        Second to last stage of a JavaFX application's shutdown cycle.
-        Application state preservation logic in here.
-        */
+    {   
         // Save all timers currently in UI to file
         fm.writeTimerState(timers);
         // Save current log directory, which  user may have changed, to file
         fm.writeSaveDirState(saveFileLbl);
     }
     
+    /**
+    Create a TimerDisplay object, add it to the parent node
+    and add it to the timers list.
+    @param parent VBox container to place the timer
+    @param h Hours setting
+    @param m Minutes setting
+    @param s Seconds setting
+    @param n Note text
+    */
     public void createTimer(VBox parent, String h, String m, String s, String n)
-    {   /*
-        Create a TimerDisplay object, add it to the parent node
-        and add it to the timers list.
-        @param parent VBox container to place the timer
-        @param h Hours setting
-        @param m Minutes setting
-        @param s Seconds setting
-        @param n Note text
-        @return None
-        */
+    {   
         TimerDisplay timerDisplay = 
             new TimerDisplay(fm, feedback, mediaPlayer, timers);
         timerDisplay.parent = parent;
@@ -252,12 +254,11 @@ public class TimeManager extends Application {
         timers.add(timerDisplay);
     }
     
+    /**
+    Called by MenuBar > About
+    Display copyright and licensing information
+    */
     private void aboutPopup() {
-        /*
-        Called by MenuBar > About
-        Display copyright and licensing information
-        @return None
-        */
         Alert alert = new Alert(AlertType.INFORMATION);
         alert.setTitle("About Time Manager");
         
@@ -278,6 +279,10 @@ public class TimeManager extends Application {
         alert.showAndWait();
     }
     
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }

@@ -38,36 +38,36 @@ public class FileManager {
     Text feedback;              // Text node to output data to user in UI
     String sep = File.separator;
     
+    /**
+    Constructor
+    @param dir Base directory to be used for saving files
+    @param feedback Text node t display any feedback to user in UI
+    */
     FileManager(String dir, Text feedback)
-    {   /*
-        Constructor
-        @param dir Base directory to be used for saving files
-        @param feedback Text node t display any feedback to user in UI
-        */
-        
+    {   
         timerLogFile = dir + sep + timerLogsFileName;
         timerStateFile = dir + sep + timerStateFileName;
         saveDirFile = dir + sep + saveDirFileName;
         this.feedback = feedback;
     }
     
+    /**
+    Used in catch clause to give user feedback
+    @param e Exception passed in by caller
+    */
     private void exceptionHandler(Exception e)
     {
-        /*
-        Used in catch clause to give user feedback
-        @param e Exception passed in by caller
-        @return None
-        */
         feedback.setText(e.getMessage());
         System.out.println(e.getMessage());
         System.out.println(Arrays.toString(e.getStackTrace())); 
     }
     
+    /**
+    Read state file data and retrun as ArrayList of file lines.
+    @return ArrayList<String> Timer state file entries as String lines.
+    */
     public ArrayList<String> getTimerState()
-    {   /*
-        Read state file data and retrun as ArrayList of file lines.
-        @return ArrayList<String> Timer state file entries as String lines.
-        */
+    {   
         ArrayList<String> timerData = new ArrayList();
         
         File f = new File(timerStateFile);
@@ -81,11 +81,12 @@ public class FileManager {
         return timerData;
     }
     
+    /**
+    Read state file data and retrun as ArrayList of file lines.
+    @return ArrayList<String> Timer state file entries as String lines.
+    */
     public ArrayList<String> getSaveDirState()
-    {   /*
-        Read state file data and retrun as ArrayList of file lines.
-        @return ArrayList<String> Timer state file entries as String lines.
-        */
+    {   
         ArrayList<String> appData = new ArrayList();
         
         File f = new File(saveDirFile);
@@ -99,13 +100,12 @@ public class FileManager {
         return appData;
     }
     
+    /**
+    Write existing timers to timer state file.
+    @param timers ArrayList used by TimeManager to store TimerDisplay objects
+    */
     public void writeTimerState(ArrayList<TimerDisplay> timers)
     {
-        /*
-        Write exisiting timers to timer state file.
-        @param timers ArrayList used by TimeManager to store TimerDisplay objects
-        @return None
-        */
         String s = "";
         for(int i=0; i<timers.size(); i++)
         {   
@@ -133,33 +133,32 @@ public class FileManager {
         writeFile(s, timerStateFile);
     }
     
+    /**
+    Write log directory displayed in UI to file to persist 
+    it once app is closed.
+    @param saveFileLbl Label node from UI displaying where log file will be written.
+    */
     public void writeSaveDirState(Label saveFileLbl)
-    {   /*
-        Write log directory displayed in UI to file to persist 
-        it once app is closed.
-        @param saveFileLbl Label node from UI displaying where log file will be written.
-        @return None
-        */
+    {   
         writeFile(saveFileLbl.getText(), saveDirFile);
     }
-    
+    /**
+    Called by TimeManager when user changes the log directory
+    @param dir New directory selected by user
+    */
     public void updateLocation(String dir)
-    {   /*
-        Called by TimeManager when user changes the log directory
-        @param dir New directory selected by user
-        @return None
-        */
-        
+    {   
         timerLogFile = dir + sep + timerLogsFileName;
     }
     
+    /**
+    Append lines to a file
+    @param lines String of lines to write to file
+    @param file String of full path and filename to write to
+    @return boolean True if successfully appended, false otherwise
+    */
     public boolean appendToFile(String lines, String file)
-    {   /*
-        Append lines to a file
-        @param lines String of lines to write to file
-        @param file String of full path and filename to write to
-        @return boolean True if successfully appened, false otherwise
-        */
+    {   
         try 
         {
             if(checkForFile(file))
@@ -177,13 +176,14 @@ public class FileManager {
         return true;
     }
     
+    /**
+    Writes a new file, overwriting the file if it exists.
+    @param lines String of lines to write to file
+    @param file String of full path and filename to write to
+    @return boolean True if successfully written, false otherwise
+    */
     public boolean writeFile(String lines, String file)
-    {   /*
-        Writes a new file, overwriting the file if it exists.
-        @param lines String of lines to write to file
-        @param file String of full path and filename to write to
-        @return boolean True if successfully written, false otherwise
-        */
+    {   
         File f = new File(file);
         
         if(f.isFile())
@@ -205,12 +205,13 @@ public class FileManager {
         return true;
     }
     
+    /**
+    Check if given file exists. If it dowsn't, create it.
+    @param file String with full path and nameof file to check
+    @return boolean True if it exists or it was successfully created, false if it doesn't
+    */
     public boolean checkForFile(String file)
-    {   /*
-        Check if given file exists. If it dowsn't, create it.
-        @param file String with full path and nameof file to check
-        @return boolean True if it exists or it was successfully created, false if it doesn't
-        */
+    {   
         File f = new File(file);
         if(f.isFile()) return true; 
         else
