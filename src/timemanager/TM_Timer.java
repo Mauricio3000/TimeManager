@@ -109,6 +109,7 @@ public class TM_Timer {
     
     /**
     Count down the comboboxes, then play alarm when all are zero.
+    Called by each key frame
     */
     private void countDown()
     {   
@@ -166,5 +167,7 @@ public class TM_Timer {
     {   
         timeline.stop();
         timeline = null;
+        keys = null;
+        System.gc();
     }
 }

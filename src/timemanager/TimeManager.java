@@ -78,8 +78,9 @@ public class TimeManager extends Application {
         // Second stage of a JavaFX application
         changeLog = "Change Log\n";
         changeLog += "v0.07:\n";
-        changeLog += "\tUpdate: Improved timer based on system clock snapshots\n";
-        changeLog += "\tUpdate: Persist Save checkbox state\n"; 
+        changeLog += "\tClear memory on Pause/Reset with System.gc()\n";
+        changeLog += "\tPersist Save checkbox state\n"; 
+        changeLog += "\tUI in scroll window\n";
         changeLog += "v0.06:\n";
         changeLog += "\tBugfix: Alarm not sounding on timers set to more than an hour\n"; 
         changeLog += "v0.05:\n";
@@ -188,10 +189,17 @@ public class TimeManager extends Application {
         
         centerVbox.getChildren().addAll(timersVbox,
                                         mediaView);
+        centerVbox.getStyleClass().add("centerVbox");
+        
+        ScrollPane sp = new ScrollPane();
+        sp.setContent(centerVbox);
+        sp.setFitToHeight(true);
+        sp.setFitToWidth(true);
+        
         feedBackHbox.getChildren().addAll(feedback);
 
         root.setTop(topVbox);
-        root.setCenter(centerVbox);
+        root.setCenter(sp);
         root.setBottom(feedBackHbox);
         
         //--- Create the scene

@@ -23,6 +23,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -fx-alignment: TOP_CENTER;
 }
 
+.centerVbox {
+    -fx-background-color: linear-gradient(skyblue, steelblue);
+    -fx-alignment: center;
+    -fx-fill-width: true;
+}
+
 .vbox, .hbox {
     -fx-alignment: CENTER;
     /*-fx-background-color: white;*/

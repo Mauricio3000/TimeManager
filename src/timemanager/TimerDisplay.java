@@ -19,7 +19,6 @@ package timemanager;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -29,8 +28,6 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
 /**
@@ -71,7 +68,7 @@ public class TimerDisplay {
     @param fm FileManager to manage timer log entries
     @param feedback Node used to display feedback in UI
     @param mediaPlayer MediaPlayer for alarm sound created in TimeManger
-    @param timers List of TimerDisplay objects managed by timeManager
+    @param timers List of TimerDisplay objects managed by TimeManager
     */        
     TimerDisplay(FileManager fm, 
                 Text feedback, 
