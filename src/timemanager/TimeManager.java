@@ -70,13 +70,16 @@ public class TimeManager extends Application {
                                         // Manage state and log files
     FileManager fm = new FileManager(System.getProperty("user.dir"), feedback);
     Label saveFileLbl;                  // Label UI node that displays log file directory
-    double version = 0.06;              // Current app version
+    double version = 0.07;              // Current app version
     String verStr = "" + version;       // App version as string
     
     @Override
     public void start(Stage primaryStage) {
         // Second stage of a JavaFX application
         changeLog = "Change Log\n";
+        changeLog += "v0.07:\n";
+        changeLog += "\tUpdate: Improved timer based on system clock snapshots\n";
+        changeLog += "\tUpdate: Persist Save checkbox state\n"; 
         changeLog += "v0.06:\n";
         changeLog += "\tBugfix: Alarm not sounding on timers set to more than an hour\n"; 
         changeLog += "v0.05:\n";
@@ -93,13 +96,7 @@ public class TimeManager extends Application {
         changeLog += "\tInitial release\n";
         
         
-        
-        
-        
-        
-        
-        
-        timers = new ArrayList();               // Instantiate the timers list
+        timers = new ArrayList<TimerDisplay>(); // Instantiate the timers list
         BorderPane root = new BorderPane();     // Root UI node
         root.getStyleClass().add("borderpane"); // Associate to styling label
         
@@ -175,7 +172,7 @@ public class TimeManager extends Application {
         for(int i=0; i<appData.size(); i++)
         {
             String[] data = appData.get(i).split(",");
-            createTimer(timersVbox, data[1], data[2], data[3], data[0]);
+            createTimer(timersVbox, data[1], data[2], data[3], data[0], data[4]);
         }
         
         //--- Compose UI
@@ -206,7 +203,7 @@ public class TimeManager extends Application {
         
         //--- Button event handlers
         newTimerBtn.setOnAction(event -> {
-            createTimer(timersVbox,"00","00","00"," ");
+            createTimer(timersVbox,"00","00","00"," ", "true");
         });
         
         saveFileBtn.setOnAction(event -> {
@@ -248,8 +245,9 @@ public class TimeManager extends Application {
     @param m Minutes setting
     @param s Seconds setting
     @param n Note text
+    @param cb Check box selected
     */
-    public void createTimer(VBox parent, String h, String m, String s, String n)
+    public void createTimer(VBox parent, String h, String m, String s, String n, String cb)
     {   
         TimerDisplay timerDisplay = 
             new TimerDisplay(fm, feedback, mediaPlayer, timers);
@@ -258,6 +256,9 @@ public class TimeManager extends Application {
         timerDisplay.minCB.setValue(m);
         timerDisplay.secCB.setValue(s);
         timerDisplay.noteField.setText(n);
+        
+        if(cb.equals("true")) timerDisplay.cb1.setSelected(true);
+        else timerDisplay.cb1.setSelected(false);
         
         parent.getChildren().add(timerDisplay.getVBox());
         

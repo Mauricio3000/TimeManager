@@ -63,7 +63,7 @@ public class FileManager {
     }
     
     /**
-    Read state file data and retrun as ArrayList of file lines.
+    Read state file data and return as ArrayList of file lines.
     @return ArrayList Timer state file entries as String lines.
     */
     public ArrayList<String> getTimerState()
@@ -82,12 +82,12 @@ public class FileManager {
     }
     
     /**
-    Read state file data and retrun as ArrayList of file lines.
+    Read state file data and return as ArrayList of file lines.
     @return ArrayList Timer state file entries as String lines.
     */
     public ArrayList<String> getSaveDirState()
     {   
-        ArrayList<String> appData = new ArrayList();
+        ArrayList<String> appData = new ArrayList<String>();
         
         File f = new File(saveDirFile);
         if(f.isFile())
@@ -116,7 +116,7 @@ public class FileManager {
             {
                 s += timers.get(i).initial_hours + ",";
                 s += timers.get(i).initial_minutes + ",";
-                s += timers.get(i).initial_seconds + "\n";
+                s += timers.get(i).initial_seconds + ",";
             }
             else
             {   // Get data from comboboxes as intial data has not been stored
@@ -126,8 +126,12 @@ public class FileManager {
                 temp = (String)timers.get(i).minCB.getValue();
                 s += temp + ",";
                 temp = (String)timers.get(i).secCB.getValue();
-                s += temp + "\n";
+                s += temp + ",";
             }
+            
+            // Save entry CB state
+            if(timers.get(i).cb1.isSelected()) s += "true\n";
+            else s += "false\n";
         }
         // Write timer data
         writeFile(s, timerStateFile);
